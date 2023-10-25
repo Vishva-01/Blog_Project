@@ -1,0 +1,11 @@
+
+<div>
+
+    <form action=""  method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <a href="{% url 'custom_tag' %}">#ADD NEW TAG</a>
+        <input type="submit" value="Submit">
+    </form>  
+                          
+</div>
