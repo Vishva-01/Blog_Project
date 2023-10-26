@@ -135,7 +135,6 @@ def create_Blog(request):
             new_blog = form.save()
             new_blog.host = request.user
             new_blog.status = 'Pending'
-
             new_blog.save()
             # form.save_m2m() #This line is to save many to many relation but there is a bug while using this
 
@@ -143,7 +142,8 @@ def create_Blog(request):
 
             if request.user.is_superuser: 
                 new_blog.status = 'Approved'
-                
+                new_blog.save()
+
                 user_subject = f'New Blog: {blog_title}'
                 user_message = (
                     f"To Read the blog post '{blog_title}'.\n\n"
@@ -210,6 +210,7 @@ def edit_Blog(request,pk):
             
             if request.user.is_superuser:
                 new_blog.status = 'Approved'
+                new_blog.save()
 
             # Notify the admin
             subject = f'New Blog: {blog_title}'

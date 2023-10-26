@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Style for the entire page */
+        /* Global Styles */
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Background color for the entire page */
+            margin: 0;
+            padding: 0;
         }
 
-        /* Style for the navigation bar at the top */
+        /* Navigation Bar Styles */
         .blog-nav {
             background-color: #333;
             color: #fff;
@@ -22,22 +25,24 @@
             margin: 0 10px;
         }
 
-        /* Style for the blog content container */
+        /* Main Content Styles */
         .blog-content {
             display: flex;
             flex-direction: row;
-            justify-content: flex-start;
         }
 
-        /* Style for the tags on the left */
+        /* Tags Sidebar Styles */
         .blog-tags {
             flex: 1;
-            padding: 20px;
+            padding: 5px;
+            margin:3px
+            background-color: #fff;
         }
 
         .blog-tags h3 {
             font-size: 20px;
             margin-bottom: 10px;
+            color: #333; /* Text color for tags section */
         }
 
         .blog-tags a {
@@ -46,28 +51,33 @@
             color: #333;
             text-decoration: none;
             margin: 5px 0;
-            margin-top:0px;
+            transition: color 0.3s;
         }
 
         .blog-tags a:hover {
             color: #007bff; /* Change color on hover */
         }
 
-        /* Style for the blog cards on the right */
+        /* Blog Cards Styles */
         .blog-cards {
             flex: 2;
             padding: 20px;
         }
 
         h2 {
-            margin: 0px;
+            margin: 0;
         }
 
         .blog-card {
-            background: #f9f9f9;
+            background: #fff;
             padding: 20px;
             margin: 0 0 20px;
             border: 1px solid #ddd;
+            transition: box-shadow 0.3s;
+        }
+
+        .blog-card:hover {
+            box-shadow: 0 0 5px #007bff; /* Add a subtle shadow on hover */
         }
 
         .blog-description {
@@ -77,62 +87,79 @@
         .blog-count {
             font-size: 18px;
             margin-bottom: 20px;
+            color: #333; /* Text color for count */
         }
 
         .blog-title {
             font-size: 24px;
             margin: 0;
             color: #000;
-            transition: color 0.3s;
         }
 
-        .blog-title:hover {
-            color: #007bff; /* Change color on hover to the desired color (e.g., blue) */
-        }
-
-        /* Style for the "Edit," "Delete," "Approve," and "Reject" links */
-        .blog-card a.edit-link,
-        .blog-card a.delete-link,
-        .blog-card a.approve-link,
-        .blog-card a.reject-link {
-            display: block;
+        .blog-tags-hover {
             font-size: 16px;
             color: #333;
-            width:70px;
             text-decoration: none;
-            margin: 10px 0;
-            margin-top: 0px;
-            background: #000; /* Background color */
+            margin: 5px 0;
+            transition: color 0.3s, background 0.3s; /* Added background transition */
+        }
+        
+        .blog-tags-hover:hover {
+            color: #007bff;
+            background: #f4f4f4; /* Change background color on hover */
+        }
+        
+
+        /* Action Links Styles */
+        .blog-card .action-link {
+            display: inline-block;
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+            margin: 10px 10px 0 0;
             padding: 5px 10px;
-            color: white;
+            background: #007bff;
+            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
         }
 
-        .blog-card a.edit-link:hover,
-        .blog-card a.delete-link:hover,
-        .blog-card a.approve-link:hover,
-        .blog-card a.reject-link:hover {
+        .blog-card .action-link:hover {
             background: #0056b3; /* Change background color on hover */
         }
 
+        .create-blog-button {
+            display: inline-block;
+            font-size: 16px;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .create-blog-button:hover {
+            background: #0056b3; /* Change background color on hover */
+        }
     </style>
 
     <title>Home Page</title>
-
 </head>
 <body>
     {% include "apps/nav.html" %}
 
-    <a href="{% url 'create' %}">Create Blog</a>
+    <a class="create-blog-button" href="{% url 'create' %}">Create Blog</a>
     <div class="blog-content">
         <div class="blog-tags">
             <h3>Tags:</h3>
             <a href="{% url 'home' %}?q=">All</a>
             {% for tag in tags %}
-                <a href="{% url 'home' %}?q={{ tag.blog_tags }}">{{ tag.blog_tags }}</a>
+                <a href="{% url 'home' %}?search={{ tag.blog_tags }}">{{ tag.blog_tags }}</a>
             {% endfor %}
         </div>
         <div class="blog-cards">
@@ -143,33 +170,24 @@
             {% if blog.status == 'Approved' or request.user.is_superuser %}
 
                 <div class="blog-card">
-                    <h2>{{blog.host.username}}</h2> 
-                    <!--<h2>{{blog.host.email}}</h2> -->
-                    
-                    <a class="blog-tags" href="{% url 'blog' blog.id %}"><h2 class="blog-title">{{blog.blog_title}}</h2></a>
-                    
+                    <h2>{{blog.host.username}}</h2>
+                    <h2 class="blog-title">{{blog.blog_title}}</h2>
                     <p class="blog-description">
                         {{ blog.blog_description|slice:":150" }}{% if blog.blog_description|length > 150 %}...{% endif %}
                     </p>
-                    <a href="{{ blog.get_absolute_url }}">Read More</a>
-
-                    
+                    <a href="{{ blog.get_absolute_url }}" class="action-link">Read More</a>
                     <p>
                         Tags:
                         {% for tag in blog.tags.all %}
-                            <a href="{% url 'home' %}?q={{ tag.blog_tags }}">#{{ tag.blog_tags }}</a>
+                            <a href="{% url 'home' %}?search={{ tag.blog_tags }}" class="blog-tags1 blog-tags-hover">#{{ tag.blog_tags }}</a>
                         {% endfor %}
                     </p>
-
-                    {% if request.user == blog.host %}
-                        <a class="edit-link" href="{% url 'edit' blog.id %}">Edit</a>
-                        <a class="delete-link" href="{% url 'delete' blog.id %}">Delete</a>
-                    {% elif request.user.is_superuser %}
-                        <a class="edit-link" href="{% url 'edit' blog.id %}">Edit</a>
-                        <a class="delete-link" href="{% url 'delete' blog.id %}">Delete</a>
-                        {% if blog.status == 'Pending' %}
-                            <a class="approve-link" href="{% url 'approve_blog' blog.id %}">Approve</a>
-                            <a class="reject-link" href="{% url 'reject_blog' blog.id %}">Reject</a>
+                    {% if request.user == blog.host or request.user.is_superuser %}
+                        <a href="{% url 'edit' blog.id %}" class="action-link">Edit</a>
+                        <a href="{% url 'delete' blog.id %}" class="action-link">Delete</a>
+                        {% if request.user.is_superuser and blog.status == 'Pending' %}
+                            <a href="{% url 'approve_blog' blog.id %}" class="action-link">Approve</a>
+                            <a href="{% url 'reject_blog' blog.id %}" class="action-link">Reject</a>
                         {% endif %}
                     {% endif %}
                 </div>
