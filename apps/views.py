@@ -367,10 +367,11 @@ def approve(request,pk):
     blog.save()
 
     # Notify the all Subscribed user
+    blog_url = request.build_absolute_uri(reverse('blog', args=[pk]))
     user_subject = f'New Blog: {blog.blog_title}'
     user_message = (
         f"To Read the  blog post '{blog.blog_title}' . \n\n "
-        f"Click this link :   http://127.0.0.1:8000/blog/{pk}   .\n\n"
+        f"Click this link :   {blog_url}  .\n\n"
     )
 
     Subscribed_email = MailNotification.objects.filter(subscribed=True)
