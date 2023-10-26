@@ -151,7 +151,8 @@
                     <p class="blog-description">
                         {{ blog.blog_description|slice:":150" }}{% if blog.blog_description|length > 150 %}...{% endif %}
                     </p>
-                    
+                    <a href="{{ blog.get_absolute_url }}">Read More</a>
+
                     
                     <p>
                         Tags:

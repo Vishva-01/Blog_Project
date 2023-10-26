@@ -9,6 +9,7 @@ from .forms import BlogForm,CommentForm,TagForm
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.cache import cache 
+from django.urls import reverse
 
 
 
@@ -66,16 +67,18 @@ def Signout(request):
 
 def index(request):
 
-    q = request.GET.get('q', '')  
-    blogs= Blogs.objects.filter((Q(tags__blog_tags__icontains=q )|
-                                Q( blog_description__icontains=q )
-                                | Q(blog_title__icontains=q ))).distinct()
+    searching = request.GET.get('search', '')  
+    blogs= Blogs.objects.filter((Q(tags__blog_tags__icontains=searching )|
+                                Q( blog_description__icontains=searching )
+                                | Q(blog_title__icontains=searching ))).distinct()
 
     tags= Tag.objects.all()
     count = blogs.filter(status__icontains='Approved').count()
 
-    context={'blogs':blogs,'tags' : tags,'count':count}
-    return render(request,'apps/home.html',context)
+    home_url = request.build_absolute_uri(reverse('home'))
+
+    context = {'blogs': blogs, 'tags': tags, 'count': count, 'home_url': home_url}
+    return render(request, 'apps/home.html', context)
 
 # @login_required(login_url='Signin')
 # def create_Blog(request):
@@ -129,27 +132,28 @@ def create_Blog(request):
             blog_description = form.cleaned_data['blog_description']
             tags = form.cleaned_data['tags']
             from_email = 'vishva01mail@gmail.com'
-            new_blog = form.save(commit=True)
+            new_blog = form.save()
             new_blog.host = request.user
             new_blog.status = 'Pending'
 
             new_blog.save()
-            # form.save_m2m()
+            # form.save_m2m() #This line is to save many to many relation but there is a bug while using this
+
+            blog_url = request.build_absolute_uri(reverse('blog', args=[new_blog.pk]))
 
             if request.user.is_superuser: 
                 new_blog.status = 'Approved'
-                # Notify the all Subscribed user
+                
                 user_subject = f'New Blog: {blog_title}'
                 user_message = (
-                    f"To Read the  blog post '{blog_title}'. \n\n " 
-                    f"Click this link:   "
+                    f"To Read the blog post '{blog_title}'.\n\n"
+                    f"Click this link: {blog_url}\n\n"
                     f"Thank you for using our platform!"
-                    )
+                )
 
                 Subscribed_email = MailNotification.objects.filter(subscribed=True)
                 subscribed_emails = [notification.email for notification in Subscribed_email]
                 send_mail(user_subject, user_message, from_email, subscribed_emails)
-
             
             else:
                 # Notify the admin
@@ -164,6 +168,7 @@ def create_Blog(request):
                 if superuser:
                     recipient_list = [superuser.email]
                     send_mail(subject, message, from_email, recipient_list)
+
                 else:
                     recipient_list = ['mforspamers@gmail.com']
                     send_mail(subject, message, from_email, recipient_list)
@@ -196,7 +201,7 @@ def edit_Blog(request,pk):
             blog_title = form.cleaned_data['blog_title']
             blog_description = form.cleaned_data['blog_description']
             tags = form.cleaned_data['tags']
-            from_email = 'vishva01mail@gmail.com'
+            from_email = ''
             new_blog = form.save(commit=True)
             new_blog.host = request.user
             new_blog.status = 'Pending'
@@ -300,10 +305,11 @@ def blogs(request, pk):
         comment = Comments(blog=blog, text=ccc, host=request.user)
         comment.save()
 
-    context = {'blogs': blog, 'comments': comments, 'view_count': view_count}
+    blog_url = request.build_absolute_uri(reverse('blog', args=[pk]))
+    context = {'blogs': blog, 'comments': comments, 'blog_url': blog_url,'view_count':view_count}
     return render(request, 'apps/BlogPage.html', context)
 
-
+#adding comments using foms currently not in use
 def create_Cmt(request,pk):
     form = CommentForm()
     if request.method == 'POST':
@@ -312,12 +318,9 @@ def create_Cmt(request,pk):
             form.instance.blog_id = pk
             form.instance.host=request.user
             form.save()
-            return redirect(f'/chat/{pk}')
+            return redirect(f'/blog/{pk}')
     context = {"form": form}
     return render(request, 'apps/comments_form.html', context)
-    
-#adding comments using foms currently not in use
-
 
 def edit_Cmt(request,pk,pk1):
     comment=Comments.objects.get(id=pk)
@@ -365,8 +368,8 @@ def approve(request,pk):
     # Notify the all Subscribed user
     user_subject = f'New Blog: {blog.blog_title}'
     user_message = (
-        f"To Read the  blog post '{blog.blog_title}'\n\n Click this link :   http://127.0.0.1:8000/blog/{pk} \n\n"
-        f"Thank you for using our platform!"
+        f"To Read the  blog post '{blog.blog_title}' . \n\n "
+        f"Click this link :   http://127.0.0.1:8000/blog/{pk}   .\n\n"
     )
 
     Subscribed_email = MailNotification.objects.filter(subscribed=True)

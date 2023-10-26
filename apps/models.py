@@ -1,6 +1,6 @@
 from django.db import models
-from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 class Tag(models.Model):
     blog_tags = models.CharField(max_length=50)
@@ -21,6 +21,8 @@ class Blogs(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return reverse('blog', args=[str(self.pk)])
     class Meta:
         ordering = ['-last_updated','-created']
 
