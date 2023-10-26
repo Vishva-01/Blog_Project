@@ -59,7 +59,7 @@ def Signin(request):
             messages.error(request, "Invalid UserName or Password")
             return redirect('Signin')
 
-    return render(request, 'apps/SignIn.html')
+    return render(request, 'apps/Signin.html')
 
 def Signout(request):
     logout(request)
