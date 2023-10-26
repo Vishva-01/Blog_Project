@@ -71,10 +71,10 @@ def index(request):
     blogs= Blogs.objects.filter((Q(tags__blog_tags__icontains=searching )|
                                 Q( blog_description__icontains=searching )
                                 | Q(blog_title__icontains=searching ))).distinct()
+    
 
     tags= Tag.objects.all()
-    count = blogs.filter(status__icontains='Approved').count()
-
+    count = blogs.filter(status__icontains='Approved').count()    
     home_url = request.build_absolute_uri(reverse('home'))
 
     context = {'blogs': blogs, 'tags': tags, 'count': count, 'home_url': home_url}
