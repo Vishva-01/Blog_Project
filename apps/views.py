@@ -311,17 +311,17 @@ def blogs(request, pk):
     return render(request, 'apps/BlogPage.html', context)
 
 #adding comments using foms currently not in use
-def create_Cmt(request,pk):
-    form = CommentForm()
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            form.instance.blog_id = pk
-            form.instance.host=request.user
-            form.save()
-            return redirect(f'/blog/{pk}')
-    context = {"form": form}
-    return render(request, 'apps/comments_form.html', context)
+# def create_Cmt(request,pk):
+#     form = CommentForm()
+#     if request.method == 'POST':
+#         form = CommentForm(request.POST)
+#         if form.is_valid():
+#             form.instance.blog_id = pk
+#             form.instance.host=request.user
+#             form.save()
+#             return redirect(f'/blog/{pk}')
+#     context = {"form": form}
+#     return render(request, 'apps/comments_form.html', context)
 
 def edit_Cmt(request,pk,pk1):
     comment=Comments.objects.get(id=pk)
@@ -340,7 +340,7 @@ def edit_Cmt(request,pk,pk1):
 def delete_Cmt(request,pk,pk1):
     comment=Comments.objects.get(id=pk)
     comment.delete()
-    return redirect(f'/chat/{pk1}')
+    return redirect(f'/blog/{pk1}')
 
 
 # def approve(request,pk):
