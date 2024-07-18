@@ -1,50 +1,65 @@
-<style>
-    
-    /* Form styling */
-    form {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    /* Form input fields */
-    form input[type="text"],
-    form input[type="submit"] {
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-    
-    /* Form submit button */
-    form input[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        width:200px;
-        transition: background-color 0.3s;
-    }
-    
-    /* Style for the "ADD NEW TAG" link */
-    a {
-        text-decoration: none;
-        color: #007bff;
-        font-size: 16px;
-    }
-    
-    a:hover {
-        text-decoration: underline;
-    }
-    
-</style>
-<div>
-
-    <form action=""  method="post">
-        {% csrf_token %}
-        {{form.as_p}}
-        <a href="{% url 'custom_tag' %}">#ADD NEW TAG</a>
-        <input type="submit" value="Submit">
-    </form>  
-                          
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Form</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #b3cde0, #d4e9f5);
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        .add-tag-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .add-tag-link:hover {
+            text-decoration: underline;
+        }
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <a href="{% url 'custom_tag' %}" class="add-tag-link">#ADD NEW TAG</a>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
