@@ -1,179 +1,130 @@
-{% extends 'main.html' %}
-
-{% block content %}
-
-<style>
-
-    /* Global styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        margin: 0;
-        padding: 0;
-    }
-    
-    /* Navigation bar at the top */
-    .blog-nav {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-    }
-    
-    .blog-nav a {
-        color: #fff;
-        text-decoration: none;
-        margin: 0 10px;
-    }
-    
-    /* Blog content container */
-    .blog-content {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-        padding: 20px;
-    }
-    
-    /* Tags on the left */
-    .blog-tags {
-        flex: 1;
-        padding: 20px;
-        background-color: #fff;
-        border: 1px solid #ddd;
-    }
-    
-    .blog-tags h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-    
-    .blog-tags a {
-        display: block;
-        font-size: 16px;
-        color: #333;
-        text-decoration: none;
-        margin: 5px 0;
-    }
-    
-    .blog-tags a:hover {
-        color: #007bff;
-    }
-    
-    /* Blog cards on the right */
-    .blog-cards {
-        flex: 2;
-        padding: 20px;
-    }
-    
-    .blog-card {
-        background: #f9f9f9;
-        padding: 20px;
-        margin: 0 0 20px;
-        border: 1px solid #ddd;
-    }
-    
-    .blog-title {
-        font-size: 24px;
-        margin: 0;
-    }
-    
-    .blog-description {
-        font-size: 16px;
-    }
-    
-    .blog-count {
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-    
-    /* Comments section */
-    .comments-box {
-        margin-top: 20px;
-    }
-    
-    .comments {
-        background-color: #fff;
-        padding: 10px;
-        border: 1px solid #ddd;
-    }
-    
-    comments p {
-        font-size: 16px;
-    }
-    
-    /* Comment form */
-    form {
-        margin-top: 20px;
-    }
-    
-    form input[type="text"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    
-    form input[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-    
-    form input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-
-</style>
-<p>No of views : {{view_count}}</p>
-<div class="blog-content">
-    <div class="blog-card">
-        <h2 class="blog-title">{{blogs.blog_title}}</h2>
-        <p class="blog-description">
-            {{ blogs.blog_description }}
-        </p>
-
-        <p>
-            Tags:
-            {% for tag in blogs.tags.all %}
-                <a href="{% url 'home' %}?q={{ tag.blog_tags }}">#{{ tag.blog_tags }}</a>
-            {% endfor %}
-        </p>
-        
-    </div>
-</div>
-
-<div>
-    <!-- <a href="{% url 'create_cmt' blogs.id %}"></a> -->
-
-        <b>#ADD COMMENTS</b>
-</div>
-
-<div class="comments-box">
-   
-    {% for c in comments %}
-        <div class="comments">
-            <p>{{c.host.username}}: {{c.text}}</p>
-
-            {% if request.user == c.host or request.user.is_superuser %}
-                <a href="{% url 'edit_cmt' c.id blogs.id %}">Edit</a>
-                <a href="{% url 'delete_cmt' c.id blogs.id %}">Delete</a>
-            {% endif %}
-
-            <hr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to right, #b3cde0, #d4e9f5);
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: 20px;
+        }
+        .blog-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .blog-description {
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+        .blog-tags a {
+            margin-right: 5px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .blog-tags a:hover {
+            text-decoration: underline;
+        }
+        .comments-box {
+            margin-top: 20px;
+        }
+        .comments {
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .comments p {
+            margin: 0;
+        }
+        .comments a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .comments a:hover {
+            text-decoration: underline;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        form input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        form input[type="submit"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>No of views: {{ view_count }}</p>
+        <div class="blog-content">
+            <div class="blog-card">
+                <h2 class="blog-title">{{ blogs.blog_title }}</h2>
+                <p class="blog-description">
+                    {{ blogs.blog_description }}
+                </p>
+                <p>
+                    Tags:
+                    {% for tag in blogs.tags.all %}
+                        <a href="{% url 'home' %}?q={{ tag.blog_tags }}">#{{ tag.blog_tags }}</a>
+                    {% endfor %}
+                </p>
+            </div>
         </div>
-    {% endfor  %}
-    
-    <div>
 
-        <form action="" method="post">
-        {% csrf_token %}
-        
-        <input type="text" name="ccc" id="">
-        <input type="submit" value="Submit">
-        
-        </form>
+        <div>
+            <b>#ADD COMMENTS</b>
+        </div>
+
+        <div class="comments-box">
+            {% for c in comments %}
+                <div class="comments">
+                    <p>{{ c.host.username }}: {{ c.text }}</p>
+                    {% if request.user == c.host or request.user.is_superuser %}
+                        <a href="{% url 'edit_cmt' c.id blogs.id %}">Edit</a>
+                        <a href="{% url 'delete_cmt' c.id blogs.id %}">Delete</a>
+                    {% endif %}
+                    <hr>
+                </div>
+            {% endfor %}
+            <div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="ccc" placeholder="Add a comment">
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
     </div>
-    
-</div>
-
-{% endblock content %}
+</body>
+</html>
