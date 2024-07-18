@@ -16,7 +16,7 @@ urlpatterns = [
 
     path('custom_tag',views.create_tag,name='custom_tag' ),
 
-    path('create_comment/<int:pk>',views.create_Cmt,name='create_cmt' ),
+    # path('create_comment/<int:pk>',views.create_Cmt,name='create_cmt' ),
     path('edit_comment/<int:pk>/<int:pk1>',views.edit_Cmt,name='edit_cmt' ),
     path('delete_comment/<int:pk>/<int:pk1>',views.delete_Cmt,name='delete_cmt' ),
 
@@ -24,3 +24,4 @@ urlpatterns = [
     path('reject_blog/<int:pk>',views.reject,name='reject_blog')
 
 ]
+ 

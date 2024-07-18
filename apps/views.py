@@ -170,13 +170,13 @@ def create_Blog(request):
                     send_mail(subject, message, from_email, recipient_list)
 
                 else:
-                    recipient_list = ['mforspamers@gmail.com']
+                    recipient_list = ['sudalaimuthu@gmail.com']
                     send_mail(subject, message, from_email, recipient_list)
 
                 # Notify the creater
                 user_subject = f'Your Blog: {blog_title} - Status Update'
                 user_message = (
-                    f"Your blog post '{blog_title}' has been submitted for review. "
+                    f"Your blog post '{blog_title}' has been submitted for review."
                     f"We will update you on the status.\n\n"
                     f"Blog Description: {blog_description}.\n\n"
                     f"Thank you for using our platform!"
