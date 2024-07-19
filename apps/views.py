@@ -80,44 +80,6 @@ def index(request):
     context = {'blogs': blogs, 'tags': tags, 'count': count, 'home_url': home_url}
     return render(request, 'apps/home.html', context)
 
-# @login_required(login_url='Signin')
-# def create_Blog(request):
-#     form = BlogForm()
-#     if request.method == "POST":
-#         form = BlogForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#     context={"form":form}
-#     return render(request,'apps/newBlog.html',context)
-
-
-# @login_required(login_url='Signin')
-# def create_Blog(request):
-#     form = BlogForm()
-#     if request.method == "POST":
-#         form = BlogForm(request.POST)
-#         if form.is_valid():
-
-#             new_blog = form.save()
-#             blog_title = new_blog.blog_title
-#             blog_description = new_blog.blog_description
-            
-#             subject = f'New Blog: {blog_title}'
-#             message = f'New blog post: {blog_title}\n\n{blog_description}\n\nThis is an important message to the admin.'
-#             from_email = 'vishva01mail@gmail.com'
-
-#             superuser = User.objects.filter(is_superuser=True).first()
-
-#             if superuser:
-#                 recipient_list = [superuser.email]  
-#                 send_mail(subject, message, from_email, recipient_list)
-
-#             send_mail(subject, message, from_email, recipient_list)
-#             return redirect('home')
-#     context={"form":form}
-#     return render(request,'apps/newBlog.html',context)
-
 
 @login_required(login_url='Signin')
 def create_Blog(request):
@@ -131,7 +93,7 @@ def create_Blog(request):
             blog_title = form.cleaned_data['blog_title']
             blog_description = form.cleaned_data['blog_description']
             tags = form.cleaned_data['tags']
-            from_email = 'vishva01mail@gmail.com'
+            from_email = 'sudalaimuthu425@gmail.com'
             new_blog = form.save()
             new_blog.host = request.user
             new_blog.status = 'Pending'
@@ -170,7 +132,7 @@ def create_Blog(request):
                     send_mail(subject, message, from_email, recipient_list)
 
                 else:
-                    recipient_list = ['sudalaimuthu@gmail.com']
+                    recipient_list = ['sudalaimuthu425@gmail.com']
                     send_mail(subject, message, from_email, recipient_list)
 
                 # Notify the creater
@@ -225,7 +187,7 @@ def edit_Blog(request,pk):
                 recipient_list = [superuser.email]
                 send_mail(subject, message, from_email, recipient_list)
             else:
-                recipient_list = ['mforspamers@gmail.com']
+                recipient_list = ['sudalaimuthu425@gmail.com']
                 send_mail(subject, message, from_email, recipient_list)
 
             # Notify the user
@@ -252,38 +214,6 @@ def delete_Blog(request,pk):
     return redirect('home')
 
 
-# @login_required(login_url='Signin')
-# def blogs(request, pk):
-#     blog = Blogs.objects.get(id=pk)
-#     comments = Comments.objects.filter(blog=blog)
-
-#     if request.method == 'POST':
-#         ccc = request.POST['ccc']
-#         comment = Comments(blog=blog, text=ccc, host=request.user)
-#         comment.save()
-
-#     context = {'blogs': blog, 'comments': comments}
-#     return render(request, 'apps/BlogPage.html', context)
-
-
-
-# @login_required(login_url='Signin')
-# def blogs(request, pk):
-#     blog = Blogs.objects.get(id=pk)
-#     comments = Comments.objects.filter(blog=blog)
-
-#     view_count_key = f'blog_view_count_{pk}'
-#     view_count = cache.get(view_count_key, 0)
-
-#     if request.method == 'POST':
-#         ccc = request.POST['ccc']
-#         comment = Comments(blog=blog, text=ccc, host=request.user)
-#         comment.save()
-
-#     view_count += 1
-#     cache.set(view_count_key, view_count)
-#     context = {'blogs': blog, 'comments': comments, 'view_count': view_count}
-#     return render(request, 'apps/BlogPage.html', context)
 
 
 @login_required(login_url='Signin')
@@ -310,18 +240,7 @@ def blogs(request, pk):
     context = {'blogs': blog, 'comments': comments, 'blog_url': blog_url,'view_count':view_count}
     return render(request, 'apps/BlogPage.html', context)
 
-#adding comments using foms currently not in use
-# def create_Cmt(request,pk):
-#     form = CommentForm()
-#     if request.method == 'POST':
-#         form = CommentForm(request.POST)
-#         if form.is_valid():
-#             form.instance.blog_id = pk
-#             form.instance.host=request.user
-#             form.save()
-#             return redirect(f'/blog/{pk}')
-#     context = {"form": form}
-#     return render(request, 'apps/comments_form.html', context)
+
 
 def edit_Cmt(request,pk,pk1):
     comment=Comments.objects.get(id=pk)
@@ -343,11 +262,7 @@ def delete_Cmt(request,pk,pk1):
     return redirect(f'/blog/{pk1}')
 
 
-# def approve(request,pk):
-#     blog = Blogs.objects.get(id=pk)
-#     blog.status = 'Approved'
-#     print(blog.status)
-#     return redirect('home')
+
 
 
 def approve(request,pk):

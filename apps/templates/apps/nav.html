@@ -1,93 +1,101 @@
 {% block content %}
 
 <style>
-    /* Reset some default browser styles */
-    body, h1, p {
+    
+    body, h1, h3, p {
         margin: 0;
         padding: 0;
     }
 
-    /* Styling for the navigation bar */
+
     .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         background-color: white;
-        color: #fff;
         padding: 10px 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    /* Styling for the logo and title */
-    .navbar-left {
-        display: flex;
-  
-    }
 
     .navbar-title {
         font-size: 24px;
         font-weight: bold;
-        
-        color:black;
-        align-items: center;
-
+        color: black;
+        text-align: center;
+        flex-grow: 1;
     }
 
-    /* Styling for the login button */
+    
     .login-button {
-        background-color: #0074D9; /* Light blue color, you can change this */
+        background-color: #0074D9;
         color: #fff;
         padding: 10px 20px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        margin-left: auto; 
     }
 
-    /* Styling for the search bar */
+    .login-button:hover {
+        background-color: #005bb5;
+    }
+
+    
+    .welcome-message {
+        text-align: left;
+        margin: 20px 0;
+        font-size: 18px;
+    }
     .search-form {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 200px; /* Set the width to 200px */
-    }
+            margin-left:1000px;
+            margin-bottom: 20px;
+            
+        }
 
-    .search-input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
 
-    .search-button {
-        background-color: #3498DB; /* Light blue color for the button, you can change this */
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+    @media (max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            
+        }
+
+        .navbar-title {
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .login-button {
+            margin-left: 0;
+            width: 100%;
+        }
     }
 </style>
 
 <div class="navbar">
+    <div class="navbar-center">
+        <h1 class="navbar-title">BLOG</h1>
+    </div>
     {% if request.user.is_authenticated %}
         <a href="{% url 'Signout' %}"><button class="login-button">Logout</button></a>
     {% else %}
         <a href="{% url 'Signin' %}"><button class="login-button">Login</button></a>
     {% endif %}
-    <div class="navbar-center">
-        <h1 class="navbar-title">Your Title</h1>
-    </div>
-
 </div>
 
-<div>
+<div class="welcome-message">
     {% if request.user.is_authenticated %}
         <h3>Welcome, {{ request.user.username }}</h3>
     {% else %}
         <h3>Welcome</h3>
     {% endif %}
+    <div class="search-form">
+        <form action="{% url 'home' %}" method="get">
+            <input class="search-input" type="text" name="search" placeholder="Search Room ...">
+            <button class="search-button" type="submit">Search</button>
+        </form>
+    </div>
 </div>
 
 
 {% endblock %}
-
-

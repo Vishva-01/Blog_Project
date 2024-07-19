@@ -17,6 +17,7 @@
             background-color: #333;
             color: #fff;
             padding: 10px;
+            text-align: center;
         }
 
         .blog-nav a {
@@ -25,23 +26,43 @@
             margin: 0 10px;
         }
 
+        .create-blog-button {
+            display: inline-block;
+            font-size: 16px;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 20px;
+        }
+
+        .create-blog-button:hover {
+            background: #0056b3;
+        }
+
         .blog-content {
             display: flex;
             flex-direction: row;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .blog-tags {
             flex: 1;
-            padding: 5px;
-            margin:3px;
+            padding: 10px;
             background-color: #fff;
             border-radius: 10px;
+            margin-right: 20px;
         }
 
         .blog-tags h3 {
             font-size: 20px;
             margin-bottom: 10px;
-            color: #333; 
+            color: #333;
         }
 
         .blog-tags a {
@@ -101,21 +122,20 @@
             margin: 5px 0;
             transition: color 0.3s, background 0.3s;
         }
-        
+
         .blog-tags-hover:hover {
             color: #007bff;
             background: #f4f4f4;
         }
-        
+
         .blog-card .action-link {
             display: inline-block;
             font-size: 16px;
-            color: #333;
+            color: #fff;
             text-decoration: none;
             margin: 10px 10px 0 0;
             padding: 5px 10px;
             background: #007bff;
-            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -123,34 +143,52 @@
         }
 
         .blog-card .action-link:hover {
-            background: #0056b3; 
+            background: #0056b3;
         }
 
-        .create-blog-button {
-            display: inline-block;
+      
+
+        .search-input {
+            padding: 10px;
             font-size: 16px;
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
+            width: calc(100% - 120px);
+            box-sizing: border-box;
+        }
+
+        .search-button {
+            padding: 10px;
+            font-size: 16px;
             background: #007bff;
+            color: #fff;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
         }
 
-        .create-blog-button:hover {
-            background: #0056b3; 
+        .search-button:hover {
+            background: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .blog-content {
+                flex-direction: column;
+            }
+
+            .blog-tags {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
         }
     </style>
-
     <title>Home Page</title>
 </head>
 <body>
     {% include "apps/nav.html" %}
 
-    <a class="create-blog-button" href="{% url 'create' %}">Create Blog</a>
+    <a class="create-blog-button" href="{% url 'create' %}">Create Blog</a>  
+    
     <div class="blog-content">
+      
         <div class="blog-tags">
             <h3>Tags:</h3>
             <a href="{% url 'home' %}?q=">All</a>
@@ -158,21 +196,14 @@
                 <a href="{% url 'home' %}?search={{ tag.blog_tags }}">{{ tag.blog_tags }}</a>
             {% endfor %}
         </div>
-        <div class="search-form">
-            <form action="{% url 'home' %}" method="get">
-                <input class="search-input" type="text" name="search" placeholder="Search Room ...">
-                <button class="search-button" type="submit">Search</button>
-            </form>
-        </div>
+      
         <div class="blog-cards">
-           
             <p class="blog-count">
                 Count: {{ count }}
             </p>
             {% for blog in blogs %}
             {% if blog.status == 'Approved' or request.user.is_superuser %}
-
-                <div class="blog-card">
+                <div class="blog-card" style="border-radius: 5px;">
                     <h2>{{blog.host.username}}</h2>
                     <h2 class="blog-title">{{blog.blog_title}}</h2>
                     <p class="blog-description">
@@ -194,7 +225,6 @@
                         {% endif %}
                     {% endif %}
                 </div>
-
             {% endif %}
             {% endfor %}
         </div>
